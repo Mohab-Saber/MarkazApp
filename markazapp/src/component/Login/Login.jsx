@@ -18,7 +18,7 @@ import React from 'react'
             <div className="bar d-flex justify-content-between border border-4  ">  
             <i   class="fa-solid fa-school p-2 "></i>  
             <p className='pt-1' > تسجيل بيانات المدرب </p> 
-            <button onClick={window.close}>  <i class="fa-solid fa-x p-2"></i></button>
+            <button>  <i class="fa-solid fa-x p-2"></i></button>
             </div>
             <div className="buttons pt-1   d-flex justify-content-between ">
                 <button  className=" btn   btn-warning " >عودة</button>

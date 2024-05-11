@@ -1,3 +1,4 @@
 node_modules
 markazapp/node_modules
 markazapp/build
+.env

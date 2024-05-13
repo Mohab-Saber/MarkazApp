@@ -4,9 +4,9 @@ const path = require('path');
 const url = require('url');
 
 // Starts a server in the backend
-require('child_process').fork('server.js'); 
+// require('child_process').fork('server.js'); 
 
-let mainWin, traineeDataWin, trainerDataWin;
+let mainWin
 
 // 
 function createMainWindow() {
@@ -18,7 +18,7 @@ function createMainWindow() {
         }
     });
 
-    mainWin.loadURL('http://localhost:3060/index.html');
+    mainWin.loadURL('http://localhost:3060/');
     mainWin.once('ready-to-show', () => mainWin.show())
     // Clean Code Shit
     mainWin.on('closed', () => {

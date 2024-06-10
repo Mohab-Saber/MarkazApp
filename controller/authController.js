@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const pg = require('pg');
 const fsPromises = require('fs').promises;
 const credentials = require('../model/credentials.json');
 const path = require('path');

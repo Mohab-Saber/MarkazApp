@@ -1,4 +1,3 @@
-const pg = require('pg');
 
 const handleGetmodareb = async (req, res) => {
     if(!process.env.USER || !process.env.PASSWORD){return res.status(403).send('Login first')}

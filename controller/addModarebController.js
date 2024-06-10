@@ -1,4 +1,3 @@
-const pg = require('pg');
 const handleAddedModareb = (req, res) => {
     const modareb = req.body
     if(!modareb){return res.statusCode(400).send({err: 'You must send the Modarab to be added'})}

@@ -4,13 +4,14 @@ const path = require('path');
 const url = require('url');
 
 // Starts a server in the backend
-// require('child_process').fork('server.js'); 
+require('child_process').fork('server.js');
 
-let mainWin
+let mainWin;
 
 // 
 function createMainWindow() {
-    mainWin = new BrowserWindow({height: 700, width: 1100,title: 'مركز التدريب المهني', show:false,
+    mainWin = new BrowserWindow({
+        height: 700, width: 1100, title: 'مركز التدريب المهني', show: false,
         webPreferences: {
             contextIsolation: true,
             nodeIntegration: true,
@@ -27,9 +28,9 @@ function createMainWindow() {
 }
 
 // Start Main Window
-app.whenReady().then( () => createMainWindow() )
+app.whenReady().then(() => createMainWindow())
 
 // Handles InterProcessCommunication
-electron.ipcMain.on('closeMainWindow', (event, args)=>{
+electron.ipcMain.on('closeMainWindow', (event, args) => {
     mainWin.close()
 })

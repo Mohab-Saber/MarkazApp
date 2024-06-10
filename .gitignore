@@ -1,4 +1,8 @@
+# BackEnd Ignored paths
 node_modules
+model
+.env
+
+# FrontEnd Ignored paths
 markazapp/node_modules
 markazapp/build
-.env

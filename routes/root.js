@@ -3,7 +3,6 @@ const router = express.Router();
 const path = require('path');
 
 router.get('/', (req, res) => {
-    console.log(process.env.PASSWORD)
     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
     res.header('Expires', '-1');
     res.header('Pragma', 'no-cache');

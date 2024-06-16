@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fsPromises = require('fs').promises;
-const credentials = require('../model/credentials.json');
 const path = require('path');
 require('dotenv').config()
 

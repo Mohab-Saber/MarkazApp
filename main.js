@@ -4,7 +4,8 @@ const path = require('path');
 const url = require('url');
 
 // Starts a server in the backend
-require('child_process').fork('server.js');
+// const server = require('child-process').fork('server.js')
+
 
 let mainWin;
 
@@ -19,7 +20,8 @@ function createMainWindow() {
         }
     });
 
-    mainWin.loadURL('http://localhost:3060/');
+
+    mainWin.loadFile(path.join(__dirname, 'views', 'index.html'));
     mainWin.once('ready-to-show', () => mainWin.show())
     // Clean Code Shit
     mainWin.on('closed', () => {
@@ -28,7 +30,7 @@ function createMainWindow() {
 }
 
 // Start Main Window
-app.whenReady().then(() => createMainWindow())
+app.whenReady().then(() => {createMainWindow(); mainWin.webContents.openDevTools();})
 
 // Handles InterProcessCommunication
 electron.ipcMain.on('closeMainWindow', (event, args) => {

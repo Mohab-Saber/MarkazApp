@@ -1,13 +1,11 @@
 const {contextBridge, ipcRenderer} = require('electron');
-const pg = require('pg');
-const os = require('os');
-const electron = require('electron');
-const myBrowserWindow = electron.BrowserWindow; 
-const path = require('path');
-
-
+const dbFunctions = require('./model/dbFunctions');
+const getAllFromTable = (tableName) => {
+    return dbFunctions.getAllFromTable(tableName);
+}
 contextBridge.exposeInMainWorld('shared', {
-
+    dbFunctions,
+    getAllFromTable : getAllFromTable
 })
 contextBridge.exposeInMainWorld('ipcRenderer', {
     send : (channel, data) => ipcRenderer.send(channel, data),

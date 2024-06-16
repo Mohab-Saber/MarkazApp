@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const addTrainerController = require('../../controller/addTrainerController');
+const addTraineeController = require('../../controller/addTraineeController');
 
-router.post('/', addTrainerController.handleAddedModareb);
+router.post('/', addTraineeController.addTrainee);
 
 module.exports = router;

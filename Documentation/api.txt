@@ -1,0 +1,11 @@
+/	/index	/index.html	(get)
+return main page and all its related static files
+
+
+/api/getAllTrainees		(get)	jwt
+=> return all trainees in the database (200)
+=/ return error message
+
+/api/addTrainee			(post)	jwt
+=> return object showing number of changes and lastInsertedRow index {"changes": 1,"lastInsertRowid": 12}
+=/ return error message

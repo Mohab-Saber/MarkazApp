@@ -1,11 +1,16 @@
 const {contextBridge, ipcRenderer} = require('electron');
-const dbFunctions = require('./model/dbFunctions');
-const getAllFromTable = (tableName) => {
-    return dbFunctions.getAllFromTable(tableName);
-}
+const dbTraineeFunctions = require('./model/dbTraineesFuncs');
+const dbTrainerFunctions = require('./model/dbTrainersFuncs');
+const dbAdministrationsFunctions = require('./model/dbAdministrationsFuncs');
+const dbSchoolsFunctions = require('./model/dbSchoolFuncs');
+
+
 contextBridge.exposeInMainWorld('shared', {
-    dbFunctions,
-    getAllFromTable : getAllFromTable
+    dbTraineeFunctions,
+    dbTrainerFunctions,
+    dbAdministrationsFunctions,
+    dbSchoolsFunctions,
+    
 })
 contextBridge.exposeInMainWorld('ipcRenderer', {
     send : (channel, data) => ipcRenderer.send(channel, data),

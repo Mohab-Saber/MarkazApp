@@ -3,6 +3,7 @@ const { app, BrowserWindow } = electron;
 const path = require('path');
 const url = require('url');
 
+app.disableHardwareAcceleration()
 // Starts a server in the backend
 // const server = require('child-process').fork('server.js')
 

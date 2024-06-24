@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Trainees {
+  id             Int       @id @default(autoincrement())
+  fullName       String
+  norm_fullName  String?
+  jobTitle       String?
+  speciality     String?
+  qualification  String?
+  graduationDate String?
+  birthDate      String?
+  hiringDate     String?
+  school         Schools?  @relation(fields: [school_id], references: [id])
+  school_id      Int?
+  teachersCode   String?   @unique
+  nationalID     String    @unique
+  residence      String?
+  address        String?
+  telephone      String?   @unique
+  email          String?   @unique
+  courses        Courses[]
+  createdAt      DateTime? @default(now())
+}
+
+// done
+model Trainers {
+  id            Int       @id @default(autoincrement())
+  fullName      String
+  norm_fullName String?
+  speciality    String?
+  address       String?
+  telephone     String?   @unique
+  email         String?   @unique
+  courses       Courses[]
+  createdAt     DateTime? @default(now())
+}
+
+model Courses {
+  id               Int             @id @default(autoincrement())
+  subject          String
+  startDate        String?
+  finishDate       String?
+  attendanceDays   Int?
+  trainer_id       Trainers?       @relation(fields: [trainersId], references: [id])
+  trainersId       Int?
+  trainees_ids     Trainees[]
+  courseCode       Int?            @unique
+  courseLevel      String?
+  school           Schools?        @relation(fields: [school_id], references: [id])
+  school_id        Int?
+  adminstration_id Adminstrations? @relation(fields: [adminstrationsId], references: [id])
+  adminstrationsId Int?
+  createdAt        DateTime?       @default(now())
+}
+
+model Adminstrations {
+  id         Int       @id @default(autoincrement())
+  name       String
+  wehda_name String
+  wehda_code Int
+  balad_name String
+  courses    Courses[]
+  schools    Schools[]
+  createdAt  DateTime? @default(now())
+}
+
+model Schools {
+  id               Int             @id @default(autoincrement())
+  name             String
+  grade            String
+  trainees_ids     Trainees[]
+  adminstration_id Adminstrations? @relation(fields: [adminstrationsId], references: [id])
+  adminstrationsId Int?
+  courses          Courses[]
+  createdAt        DateTime?       @default(now())
+}
+
+// ==> Done
+// trainees.school_id > school.id
+// courses.adminstration_id < adminstration.id
+// trainers.id < courses.trainer_id
+// adminstration.id < school.adminstration_id
+// courses.school_id > school.id
+// trainees.id <> courses.trainees_ids
+// ===========

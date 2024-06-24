@@ -1,25 +1,15 @@
-<!doctype html>
-<html lang="en">
-
-<head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Web site created using create-react-app" />
-    <link rel="apple-touch-icon" href="/logo192.png" />
-    <title>React App</title>
-</head>
-
-<body>
-    <div id="root">
-        manga
-    </div>
-    <button id="btn" onclick="">startServer</button>
-    <script>
-            let mybtn = document.getElementById('btn');
-            test = mybtn.addEventListener('click', window.shared.getAllTrainees)
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World!</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <h1>💖 Hello World!</h1>
+    <p>Welcome to your Electron application.</p>
+    <button id="#btn-submit" onclick="window.ipcRenderer.send('ss','datas')">Submit</button>
+    <script src="./index.js">
     </script>
-</body>
-
+  </body>
 </html>

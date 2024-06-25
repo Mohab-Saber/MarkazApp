@@ -1,6 +1,15 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const path = require('node:path');
-const axios = require('axios');
+
+import path from 'node:path';
+import os from 'node:os';
+import fs from 'node:fs';
+
+const DATABASE_URL = `DATABASE_URL="file:${path.join( os.userInfo().homedir, 'AppData', 'local', 'Markaz','data.db')}"`;
+fs.writeFileSync('.env', DATABASE_URL);
+
+
+const {appServer : appserver} = require('./server');
+appserver.listen(3060, () => {console.log('Server running on 3060')});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) {
@@ -54,6 +63,7 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
 
-ipcMain.on('ss', (event, args) => {
+ipcMain.on('log', (event, args) => {
   console.log(args)
 })
+

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -20,7 +17,6 @@ model Trainees {
   graduationDate String?
   birthDate      String?
   hiringDate     String?
-  school         Schools?  @relation(fields: [school_id], references: [id])
   school_id      Int?
   teachersCode   String?   @unique
   nationalID     String    @unique
@@ -28,11 +24,11 @@ model Trainees {
   address        String?
   telephone      String?   @unique
   email          String?   @unique
-  courses        Courses[]
   createdAt      DateTime? @default(now())
+  school         Schools?  @relation(fields: [school_id], references: [id])
+  courses        Courses[] @relation("CoursesToTrainees")
 }
 
-// done
 model Trainers {
   id            Int       @id @default(autoincrement())
   fullName      String
@@ -41,8 +37,8 @@ model Trainers {
   address       String?
   telephone     String?   @unique
   email         String?   @unique
-  courses       Courses[]
   createdAt     DateTime? @default(now())
+  courses       Courses[]
 }
 
 model Courses {
@@ -51,16 +47,16 @@ model Courses {
   startDate        String?
   finishDate       String?
   attendanceDays   Int?
-  trainer_id       Trainers?       @relation(fields: [trainersId], references: [id])
   trainersId       Int?
-  trainees_ids     Trainees[]
   courseCode       Int?            @unique
   courseLevel      String?
-  school           Schools?        @relation(fields: [school_id], references: [id])
   school_id        Int?
-  adminstration_id Adminstrations? @relation(fields: [adminstrationsId], references: [id])
   adminstrationsId Int?
   createdAt        DateTime?       @default(now())
+  adminstration_id Adminstrations? @relation(fields: [adminstrationsId], references: [id])
+  school           Schools?        @relation(fields: [school_id], references: [id])
+  trainer_id       Trainers?       @relation(fields: [trainersId], references: [id])
+  trainees_ids     Trainees[]      @relation("CoursesToTrainees")
 }
 
 model Adminstrations {
@@ -69,27 +65,18 @@ model Adminstrations {
   wehda_name String
   wehda_code Int
   balad_name String
+  createdAt  DateTime? @default(now())
   courses    Courses[]
   schools    Schools[]
-  createdAt  DateTime? @default(now())
 }
 
 model Schools {
   id               Int             @id @default(autoincrement())
   name             String
   grade            String
-  trainees_ids     Trainees[]
-  adminstration_id Adminstrations? @relation(fields: [adminstrationsId], references: [id])
   adminstrationsId Int?
-  courses          Courses[]
   createdAt        DateTime?       @default(now())
+  courses          Courses[]
+  adminstration_id Adminstrations? @relation(fields: [adminstrationsId], references: [id])
+  trainees_ids     Trainees[]
 }
-
-// ==> Done
-// trainees.school_id > school.id
-// courses.adminstration_id < adminstration.id
-// trainers.id < courses.trainer_id
-// adminstration.id < school.adminstration_id
-// courses.school_id > school.id
-// trainees.id <> courses.trainees_ids
-// ===========

@@ -9,6 +9,10 @@
     <h1>💖 Hello World!</h1>
     <p>Welcome to your Electron application.</p>
     <button id="#btn-submit" onclick="window.ipcRenderer.send('log','Message!')">Submit</button>
+    <form action="http://localhost:3060/api/">
+      <input name="text" value="tt"/>
+      <button id="#btn-pdf" type="submit" onclick="window.ipcRenderer.send('pdf','Message!')">pdf</button>
+    </form>
     <script src="./index.js">
     </script>
   </body>

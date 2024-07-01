@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "start": "electron-forge start",
-    "dev": "nodemon ./app/server.js",
+    "dev": "nodemon ./src/server.ts",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",

@@ -1,8 +1,8 @@
 const {contextBridge, ipcRenderer} = require('electron');
-
+const fs = require('node:fs');
 
 contextBridge.exposeInMainWorld('shared', {
-
+fs
     
 })
 contextBridge.exposeInMainWorld('ipcRenderer', {

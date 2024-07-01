@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+import ews from "../utility/eliminateWhiteSpace";
+
 
 const getAllTrainees = async (req, res) => {
     try {

@@ -1,12 +1,21 @@
 export { };
 var express = require('express');
 const router = express.Router();
-const { getAllTrainers, addTrainer, updateTrainer, deleteTrainer } = require('../../controller/trainersController.js')
+const {getCount, getTrainer, getAllTrainers,getSomeTrainers, addTrainer, updateTrainer, deleteTrainer } = require('../../controller/trainersController.js')
 
 router
-    .get('/', getAllTrainers)
+    .get('/count', getCount)
+    .get('/:id', getTrainer)
+    .get('/', (req, res) => {
+        if(req.query._page){
+        getSomeTrainers(req, res)
+    }else{
+
+        getAllTrainers(req, res)
+    }})
     .post('/', addTrainer)
-    .put('/', updateTrainer)
-    .delete('/', deleteTrainer)
+    .put('/:id', updateTrainer)
+    .delete('/:id', deleteTrainer)
 
 module.exports = router;
+

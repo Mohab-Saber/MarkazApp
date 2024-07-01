@@ -1,6 +1,45 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+const getCount = async (req, res) => {
+
+    try {
+        const count = await prisma.trainers.count()
+        res.status(200).send({count})
+    } catch (error: any) {
+        res.status(400).send(error.message)
+    }
+}
+const getTrainer = async (req, res) => {
+
+    try {
+        const trainers = await prisma.trainers.findFirst({
+            where : {
+                id : parseInt(req.params.id)
+            }
+
+        })
+        res.status(200).send(trainers)
+    } catch (error: any) {
+        res.status(400).send(error.message)
+    }
+}
+const getSomeTrainers = async (req, res) => {
+
+    try {
+        const trainers = await prisma.trainers.findMany({
+            include: {
+                courses: true
+            },
+            take: parseInt(req.query._limit),
+            skip: (parseInt(req.query._page) - 1) * req.query._limit
+        })
+        res.status(200).send(trainers)
+    } catch (error: any) {
+        res.status(400).send(error.message)
+    }
+}
+
 const getAllTrainers = async (req, res) => {
     try {
         const trainers = await prisma.trainers.findMany({
@@ -22,8 +61,9 @@ const addTrainer = async (req, res) => {
             data: trainer
         })
         res.send(opCode)
-
+        
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }
@@ -32,27 +72,26 @@ const addTrainer = async (req, res) => {
 const updateTrainer = async (req, res) => {
     try {
         const trainer = req.body;
-
         const opCode = await prisma.trainers.update({
             data: trainer,
-            where: { id: trainer.id }
+            where: { id: parseInt(req.params.id) }
         })
         res.send(opCode)
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }
 const deleteTrainer = async (req, res) => {
     try {
-        const trainer = req.body;
-
         const opCode = await prisma.trainers.delete({
-            where: { id: trainer.id }
+            where: { id: parseInt(req.params.id) }
         })
         res.send(opCode)
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }
 
-module.exports = { getAllTrainers, addTrainer, updateTrainer, deleteTrainer };
+module.exports = {getCount, getTrainer, getAllTrainers, getSomeTrainers, addTrainer, updateTrainer, deleteTrainer };

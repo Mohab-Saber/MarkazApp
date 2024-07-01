@@ -19,8 +19,7 @@ model Trainees {
   hiringDate     String?
   school_id      Int?
   teachersCode   String?   @unique
-  nationalID     String    @unique
-  residence      String?
+  nationalID     String?   @unique
   address        String?
   telephone      String?   @unique
   email          String?   @unique
@@ -47,7 +46,7 @@ model Courses {
   startDate        String?
   finishDate       String?
   attendanceDays   Int?
-  trainersId       Int?
+  trainerId        Int?
   courseCode       Int?            @unique
   courseLevel      String?
   school_id        Int?
@@ -55,8 +54,8 @@ model Courses {
   createdAt        DateTime?       @default(now())
   adminstration_id Adminstrations? @relation(fields: [adminstrationsId], references: [id])
   school           Schools?        @relation(fields: [school_id], references: [id])
-  trainer_id       Trainers?       @relation(fields: [trainersId], references: [id])
-  trainees_ids     Trainees[]      @relation("CoursesToTrainees")
+  trainer_id       Trainers?       @relation(fields: [trainerId], references: [id])
+  trainees         Trainees[]      @relation("CoursesToTrainees")
 }
 
 model Adminstrations {
@@ -78,5 +77,10 @@ model Schools {
   createdAt        DateTime?       @default(now())
   courses          Courses[]
   adminstration_id Adminstrations? @relation(fields: [adminstrationsId], references: [id])
-  trainees_ids     Trainees[]
+  trainees         Trainees[]
+}
+
+model Specialities {
+  id   Int    @id @default(autoincrement())
+  name String @unique @default(uuid())
 }

@@ -4,8 +4,12 @@ import path from 'node:path';
 import os from 'node:os';
 import fs from 'node:fs';
 
-const DATABASE_URL = `DATABASE_URL="file:${path.join( os.userInfo().homedir, 'AppData', 'local', 'Markaz','data.db')}"`;
-fs.writeFileSync('.env', DATABASE_URL);
+const pathToData = path.join( os.userInfo().homedir, 'AppData', 'local', 'Markaz','data.db');
+if(!fs.existsSync(pathToData)){
+  fs.writeFileSync(pathToData, '');
+}
+const DATABASE_URL = `DATABASE_URL="file:${pathToData}"`;
+fs.writeFileSync('./.env', DATABASE_URL);
 
 
 const {appServer : appserver} = require('./server');
@@ -65,5 +69,10 @@ app.on('window-all-closed', () => {
 
 ipcMain.on('log', (event, args) => {
   console.log(args)
+})
+
+ipcMain.on('pdf', (event, args) => {
+  console.log(args)
+  
 })
 

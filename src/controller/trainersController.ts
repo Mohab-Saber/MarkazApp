@@ -57,6 +57,9 @@ const getAllTrainers = async (req, res) => {
 const addTrainer = async (req, res) => {
     try {
         const trainer = req.body;
+        for (const property in trainer) {
+            if(trainer[property] === ""){trainer[property] = null}
+        }
         const opCode = await prisma.trainers.create({
             data: trainer
         })
@@ -72,13 +75,18 @@ const addTrainer = async (req, res) => {
 const updateTrainer = async (req, res) => {
     try {
         const trainer = req.body;
+        const trainerID = trainer.id
+        delete trainer.id
+        for (const property in trainer) {
+            if(trainer[property] === ""){trainer[property] = null}
+        }
         const opCode = await prisma.trainers.update({
             data: trainer,
-            where: { id: parseInt(req.params.id) }
+            where: { id: parseInt(trainerID) }
         })
         res.send(opCode)
     } catch (error: any) {
-        console.log(error)
+        console.log(error, `\n======================\n`)
         res.status(400).send(error.message)
     }
 }

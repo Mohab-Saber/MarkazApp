@@ -12,6 +12,7 @@ const getAllTrainees = async (req, res) => {
         })
         res.status(200).send(trainees)
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }
@@ -20,12 +21,14 @@ const getAllTrainees = async (req, res) => {
 const addTrainee = async (req, res) => {
     try {
         const trainee = req.body;
+        delete trainee.school
         const opCode = await prisma.trainees.create({
             data: trainee
         })
         res.send(opCode)
 
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }
@@ -41,6 +44,7 @@ const updateTrainee = async (req, res) => {
         })
         res.send(opCode)
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }
@@ -53,6 +57,7 @@ const deleteTrainee = async (req, res) => {
         })
         res.send(opCode)
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }

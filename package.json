@@ -53,6 +53,8 @@
     "dotenv": "^16.4.5",
     "electron-squirrel-startup": "^1.0.1",
     "express": "^4.19.2",
+    "node-fetch": "^3.3.2",
+    "pdf-creator-node": "^2.3.5",
     "prisma": "^5.15.1"
   }
 }

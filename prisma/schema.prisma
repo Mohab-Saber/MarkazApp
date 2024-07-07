@@ -50,11 +50,11 @@ model Courses {
   courseCode       Int?            @unique
   courseLevel      String?
   school_id        Int?
-  adminstrationsId Int?
+  adminstrationId  Int?
   createdAt        DateTime?       @default(now())
-  adminstration_id Adminstrations? @relation(fields: [adminstrationsId], references: [id])
+  adminstration_id Adminstrations? @relation(fields: [adminstrationId], references: [id])
   school           Schools?        @relation(fields: [school_id], references: [id])
-  trainer_id       Trainers?       @relation(fields: [trainerId], references: [id])
+  trainer          Trainers?       @relation(fields: [trainerId], references: [id])
   trainees         Trainees[]      @relation("CoursesToTrainees")
 }
 

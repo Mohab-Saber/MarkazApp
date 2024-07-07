@@ -9,6 +9,7 @@ appServer.use(cors());
 appServer.use(express.urlencoded({ extended: false }));
 // built-in middleware for json 
 appServer.use(express.json());
+appServer.use(express.text());
 
 
 
@@ -23,6 +24,7 @@ appServer.use('/api/courses', require('./routes/api/courses'));
 appServer.use('/api/schools', require('./routes/api/schools'));
 appServer.use('/api/adminstrations', require('./routes/api/adminstrations'));
 appServer.use('/api/specialities', require('./routes/api/specialities'));
+appServer.use('/api/pdf', require('./routes/api/pdf'));
 
 appServer.listen(3060, () => console.log(`SERVER Runinng 3060`))
 

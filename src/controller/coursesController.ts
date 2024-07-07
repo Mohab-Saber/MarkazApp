@@ -1,12 +1,20 @@
 import { PrismaClient } from "@prisma/client";
-import { equal } from "node:assert";
 const prisma = new PrismaClient();
 
 const getAllCourses = async (req, res) => {
     try {
         const courses = await prisma.courses.findMany({
             include:{
-                trainees: true
+               trainer:{
+                select:{
+                    fullName: true
+                }
+               },
+                trainees: {
+                    select:{
+                        fullName: true
+                    }
+                }
             }
         })
         res.status(200).send(courses)
@@ -20,9 +28,17 @@ const getAllCourses = async (req, res) => {
 const addCourse = async (req, res) => {
     try {
         const course = req.body;
-        console.log(course)
-        const opCode = await prisma.courses.create({
-            data: course
+            const opCode = await prisma.courses.create({
+            data: {
+                subject: course.subject,
+                startDate: course.startDate,
+                finishDate: course.finishDate,
+                attendanceDays: parseInt(course.attendanceDays),
+                courseCode: parseInt(course.courseCode),
+                courseLevel: course.courseLevel,
+                trainer:{connect: {id: course.trainer}},
+                trainees: {connect: course.trainees}
+            }
         })
         res.send(opCode)
 

@@ -8,7 +8,7 @@ appServer.use(cors());
 // built-in middleware to handle urlencoded form data
 appServer.use(express.urlencoded({ extended: false }));
 // built-in middleware for json 
-appServer.use(express.json());
+appServer.use(express.json({limit: '10mb'}));
 appServer.use(express.text());
 
 
@@ -26,7 +26,7 @@ appServer.use('/api/adminstrations', require('./routes/api/adminstrations'));
 appServer.use('/api/specialities', require('./routes/api/specialities'));
 appServer.use('/api/pdf', require('./routes/api/pdf'));
 
-appServer.listen(3060, () => console.log(`SERVER Runinng 3060`))
+appServer.listen(PORT, () => console.log(`SERVER Runinng ${PORT}`))
 
 
 

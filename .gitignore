@@ -1,3 +1,6 @@
+views/PDF
+views/toPDF
+pdf
 # Logs
 logs
 *.log

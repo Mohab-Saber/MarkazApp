@@ -46,6 +46,7 @@ model Courses {
   startDate        String?
   finishDate       String?
   attendanceDays   Int?
+  attendanceNumber Int?
   trainerId        Int?
   courseCode       Int?            @unique
   courseLevel      String?
@@ -62,22 +63,24 @@ model Adminstrations {
   id         Int       @id @default(autoincrement())
   name       String
   wehda_name String
-  wehda_code Int
-  balad_name String
+  wehda_code String
+  balad_name String    @unique
+  balad_code String
   createdAt  DateTime? @default(now())
   courses    Courses[]
-  schools    Schools[]
+  Schools    Schools[]
 }
 
 model Schools {
-  id               Int             @id @default(autoincrement())
-  name             String
-  grade            String
-  adminstrationsId Int?
-  createdAt        DateTime?       @default(now())
-  courses          Courses[]
-  adminstration_id Adminstrations? @relation(fields: [adminstrationsId], references: [id])
-  trainees         Trainees[]
+  id            Int             @id @default(autoincrement())
+  name          String
+  grade         String?
+  adminstration String
+  balad_name    String?
+  createdAt     DateTime?       @default(now())
+  balad         Adminstrations? @relation(fields: [balad_name], references: [balad_name])
+  courses       Courses[]
+  trainees      Trainees[]
 }
 
 model Specialities {

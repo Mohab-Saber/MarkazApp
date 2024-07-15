@@ -7,6 +7,7 @@ const getCount = async (req, res) => {
         const count = await prisma.trainers.count()
         res.status(200).send({count})
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }
@@ -21,6 +22,7 @@ const getTrainer = async (req, res) => {
         })
         res.status(200).send(trainers)
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }
@@ -36,6 +38,7 @@ const getSomeTrainers = async (req, res) => {
         })
         res.status(200).send(trainers)
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }
@@ -43,12 +46,13 @@ const getSomeTrainers = async (req, res) => {
 const getAllTrainers = async (req, res) => {
     try {
         const trainers = await prisma.trainers.findMany({
-            include: {
-                courses: true
-            }
+            // include: {
+            //     courses: true
+            // }
         })
         res.status(200).send(trainers)
     } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }

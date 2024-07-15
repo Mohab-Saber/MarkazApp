@@ -8,7 +8,7 @@ appServer.use(cors());
 // built-in middleware to handle urlencoded form data
 appServer.use(express.urlencoded({ extended: false }));
 // built-in middleware for json 
-appServer.use(express.json({limit: '10mb'}));
+appServer.use(express.json({limit: '500mb'}));
 appServer.use(express.text());
 
 

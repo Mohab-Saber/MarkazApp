@@ -1,7 +1,7 @@
 export { };
 var express = require('express');
 const router = express.Router();
-const { makePdf } = require('../../controller/pdfController.js')
+const { makePdf } = require('../../controller/pdfController/pdfController')
 
 router
     .get('/', makePdf)

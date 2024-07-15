@@ -1,21 +1,39 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+const getCourse = async (req, res) => {
+
+    try {
+        const courses = await prisma.courses.findFirst({
+            where: {
+                id: parseInt(req.params.id)
+            },
+            include:{
+                trainer: true,
+                trainees: true
+            }
+        })
+        res.status(200).send(courses)
+    } catch (error: any) {
+        res.status(400).send(error.message)
+    }
+}
+
 const getAllCourses = async (req, res) => {
     try {
         const courses = await prisma.courses.findMany({
-            include:{
-               trainer:{
-                select:{
-                    fullName: true
-                }
-               },
-                trainees: {
-                    select:{
-                        fullName: true
-                    }
-                }
-            }
+            // include:{
+            //    trainer:{
+            //     select:{
+            //         fullName: true
+            //     }
+            //    },
+            //     trainees: {
+            //         select:{
+            //             fullName: true
+            //         }
+            //     }
+            // }
         })
         res.status(200).send(courses)
     } catch (error: any) {
@@ -28,7 +46,10 @@ const getAllCourses = async (req, res) => {
 const addCourse = async (req, res) => {
     try {
         const course = req.body;
-            const opCode = await prisma.courses.create({
+        for (const property in course) {
+            if (course[property] === "") { course[property] = null }
+        }
+        const opCode = await prisma.courses.create({
             data: {
                 subject: course.subject,
                 startDate: course.startDate,
@@ -36,8 +57,8 @@ const addCourse = async (req, res) => {
                 attendanceDays: parseInt(course.attendanceDays),
                 courseCode: parseInt(course.courseCode),
                 courseLevel: course.courseLevel,
-                trainer:{connect: {id: course.trainer}},
-                trainees: {connect: course.trainees}
+                trainer: { connect: { id: course.trainer } },
+                trainees: { connect: course.trainees }
             }
         })
         res.send(opCode)
@@ -52,7 +73,9 @@ const addCourse = async (req, res) => {
 const updateCourse = async (req, res) => {
     try {
         const course = req.body;
-
+        for (const property in course) {
+            if (course[property] === "") { course[property] = null }
+        }
         const opCode = await prisma.courses.update({
             data: course,
             where: { id: course.id }
@@ -77,4 +100,4 @@ const deleteCourse = async (req, res) => {
     }
 }
 
-module.exports = {getAllCourses, addCourse, updateCourse, deleteCourse};
+module.exports = { getCourse, getAllCourses, addCourse, updateCourse, deleteCourse };

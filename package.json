@@ -1,27 +1,73 @@
 {
   "name": "markazapp",
+  "productName": "MarkazApp",
   "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron .",
-    "dev": "nodemon electron ."
+  "description": "MarkazApp to manage Database",
+  "main": "./app/main.js",
+  "config": {
+    "forge": {
+      "makers": [
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "win32"
+          ]
+        }
+      ],
+      "publishers": []
+    }
   },
-  "author": "ModyMadrid",
-  "license": "MIT",
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "better-sqlite3": "^11.0.0",
-    "body-parser": "^1.20.2",
-    "cookie-parser": "^1.4.6",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "electron": "^30.0.2",
-    "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.2"
+  "build": {
+    "files": [
+      "./app/**/*",
+      "./node_modules/.prisma/client/default.js",
+      "node_modules/@prisma/client/**/**/*"
+    ]
+  },
+  "extraResources": [
+    "node_modules/**/**/*",
+    "node_modules/@prisma/client/**/*"
+  ],
+  "scripts": {
+    "start": "electron-forge start",
+    "import": "electron-forge import",
+    "dev": "nodemon ./app/server.js",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "rebuild": "electron-rebuild -f -w .prisma",
+    "lint": "echo \"No linting configured\""
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-rpm": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+    "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron/fuses": "^1.8.0",
+    "@types/node": "^20.14.8",
+    "electron": "31.0.2",
+    "prisma": "^5.17.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.2"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Mohab Saber",
+    "email": "mohabsaber58@gmail.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.17.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "electron-squirrel-startup": "^1.0.1",
+    "express": "^4.19.2",
+    "pdf-lib": "^1.17.1",
+    "playwright": "^1.45.3"
   }
 }

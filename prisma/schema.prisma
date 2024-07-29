@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Trainees {
+  id             Int       @id @default(autoincrement())
+  fullName       String
+  jobTitle       String?
+  speciality     String?
+  qualification  String?
+  graduationDate String?
+  grade          String?
+  birthDate      String?
+  hiringDate     String?
+  school_id      Int?
+  teachersCode   String?   @unique
+  nationalID     String?   @unique
+  address        String?
+  telephone      String?   @unique
+  email          String?   @unique
+  createdAt      DateTime? @default(now())
+  school         Schools?  @relation(fields: [school_id], references: [id])
+  courses        Courses[] @relation("CoursesToTrainees")
+}
+
+model Trainers {
+  id         Int       @id @default(autoincrement())
+  fullName   String
+  speciality String?
+  address    String?
+  telephone  String?   @unique
+  email      String?   @unique
+  createdAt  DateTime? @default(now())
+  courses    Courses[] @relation("CoursesToTrainers")
+}
+
+model Courses {
+  id               Int             @id @default(autoincrement())
+  subject          String
+  startDate        String?
+  finishDate       String?
+  attendanceDays   Int?
+  attendanceNumber Int?
+  courseCode       Int?            @unique
+  courseLevel      String?
+  school_id        Int?
+  adminstrationId  Int?
+  createdAt        DateTime?       @default(now())
+  adminstration    Adminstrations? @relation(fields: [adminstrationId], references: [id])
+  school           Schools?        @relation(fields: [school_id], references: [id])
+  trainers         Trainers[]      @relation("CoursesToTrainers")
+  trainees         Trainees[]      @relation("CoursesToTrainees")
+}
+
+model Adminstrations {
+  id         Int       @id @default(autoincrement())
+  name       String
+  wehda_name String
+  wehda_code String
+  balad_name String    @unique
+  balad_code String    @unique
+  createdAt  DateTime? @default(now())
+  courses    Courses[]
+  Schools    Schools[]
+}
+
+model Schools {
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  grade         String?
+  adminstration String
+  balad_name    String?
+  createdAt     DateTime?       @default(now())
+  balad         Adminstrations? @relation(fields: [balad_name], references: [balad_name])
+  courses       Courses[]
+  trainees      Trainees[]
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+}
+
+// model Specialities {
+//   id   Int    @id @default(autoincrement())
+//   name String @unique @default(uuid())
+// }

@@ -4,6 +4,19 @@
   "version": "1.0.0",
   "description": "MarkazApp to manage Database",
   "main": "./app/main.js",
+  "config": {
+    "forge": {
+      "makers": [
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "win32"
+          ]
+        }
+      ],
+      "publishers": []
+    }
+  },
   "build": {
     "files": [
       "./app/**/*",
@@ -17,6 +30,7 @@
   ],
   "scripts": {
     "start": "electron-forge start",
+    "import": "electron-forge import",
     "dev": "nodemon ./app/server.js",
     "package": "electron-forge package",
     "make": "electron-forge make",
@@ -37,8 +51,7 @@
     "@electron/fuses": "^1.8.0",
     "@types/node": "^20.14.8",
     "electron": "31.0.2",
-    "electron-builder": "^24.13.3",
-    "prisma": "^5.16.2",
+    "prisma": "^5.17.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.2"
   },
@@ -49,13 +62,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@prisma/client": "^5.16.2",
+    "@prisma/client": "^5.17.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "electron-squirrel-startup": "^1.0.1",
     "express": "^4.19.2",
-    "node-fetch": "^3.3.2",
     "pdf-lib": "^1.17.1",
-    "playwright": "^1.45.1"
+    "playwright": "^1.45.3"
   }
 }

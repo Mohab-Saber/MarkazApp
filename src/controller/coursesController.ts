@@ -1,5 +1,33 @@
 import { PrismaClient } from "@prisma/client";
+import ews from "../utility/eliminateWhiteSpace";
 const prisma = new PrismaClient();
+
+const getCount = async (req, res) => {
+
+    try {
+        const count = await prisma.adminstrations.count()
+        res.status(200).send({ count })
+    } catch (error: any) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+}
+const getSubjects = async (req, res) => {
+
+    try {
+        const subjects = await prisma.courses.findMany({
+            distinct: "subject",
+            select: {
+                id: true,
+                subject: true
+            }
+        })
+        res.status(200).send(subjects)
+    } catch (error: any) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+}
 
 const getCourse = async (req, res) => {
 
@@ -8,8 +36,8 @@ const getCourse = async (req, res) => {
             where: {
                 id: parseInt(req.params.id)
             },
-            include:{
-                trainer: true,
+            include: {
+                trainers: true,
                 trainees: true
             }
         })
@@ -22,18 +50,22 @@ const getCourse = async (req, res) => {
 const getAllCourses = async (req, res) => {
     try {
         const courses = await prisma.courses.findMany({
-            // include:{
-            //    trainer:{
-            //     select:{
-            //         fullName: true
-            //     }
-            //    },
-            //     trainees: {
-            //         select:{
-            //             fullName: true
-            //         }
-            //     }
-            // }
+            include: {
+                trainers: {
+                    select: {
+                        id: true,
+                        fullName: true,
+
+                    }
+                },
+                trainees: {
+                    select: {
+                        id: true,
+                        fullName: true,
+                        nationalID: true
+                    }
+                }
+            }
         })
         res.status(200).send(courses)
     } catch (error: any) {
@@ -48,6 +80,7 @@ const addCourse = async (req, res) => {
         const course = req.body;
         for (const property in course) {
             if (course[property] === "") { course[property] = null }
+            if (typeof course[property] === "string") { course[property] = ews(course[property]) }
         }
         const opCode = await prisma.courses.create({
             data: {
@@ -57,7 +90,7 @@ const addCourse = async (req, res) => {
                 attendanceDays: parseInt(course.attendanceDays),
                 courseCode: parseInt(course.courseCode),
                 courseLevel: course.courseLevel,
-                trainer: { connect: { id: course.trainer } },
+                trainers: { connect: course.trainers },
                 trainees: { connect: course.trainees }
             }
         })
@@ -75,12 +108,66 @@ const updateCourse = async (req, res) => {
         const course = req.body;
         for (const property in course) {
             if (course[property] === "") { course[property] = null }
+            if (typeof course[property] === "string") { course[property] = ews(course[property]) }
         }
+        const courseID = course.id;
+        const trainees = course.selectedTrainees;
+        const trainers = course.selectedTrainers;
+        course.courseCode = parseInt(course.courseCode) || null
+        course.attendanceDays = parseInt(course.attendanceDays) || null
+
+        delete course.id; delete course.selectedTrainers; delete course.selectedTrainees;
+
+        const myCourse = await prisma.courses.findUnique({
+            where: {
+                id: courseID
+            },
+            include: {
+                trainers: true,
+                trainees: true
+            }
+        })
+        if (!myCourse) {
+            throw new Error('User not found');
+        }
+
+        const disconnectTrainees = myCourse.trainees.map(e => {
+            return { id: e.id };
+        });
+        const disconnectTrainers = myCourse.trainers.map(e => {
+            return { id: e.id };
+        });
+
+        const deletedCourseRelations = await prisma.courses.update({
+            data: {
+                trainees:{
+                    disconnect: disconnectTrainees
+                },
+                trainers:{
+                    disconnect: disconnectTrainers
+                }
+            },
+            where: { id: courseID }
+
+        })
+
         const opCode = await prisma.courses.update({
-            data: course,
-            where: { id: course.id }
+            data: {
+                ...course,
+                trainees: {
+                    connect: trainees.map((e) => ({id: e}))
+                },
+                trainers: {
+                    connect: trainers.map((e) => ({id: e}))
+                },
+
+            },
+            where: { id: courseID }
+
         })
         res.send(opCode)
+
+
     } catch (error: any) {
         console.log(error)
         res.status(400).send(error.message)
@@ -88,10 +175,8 @@ const updateCourse = async (req, res) => {
 }
 const deleteCourse = async (req, res) => {
     try {
-        const course = req.body;
-
         const opCode = await prisma.courses.delete({
-            where: { id: course.id }
+            where: { id: parseInt(req.params.id) }
         })
         res.send(opCode)
     } catch (error: any) {
@@ -100,4 +185,4 @@ const deleteCourse = async (req, res) => {
     }
 }
 
-module.exports = { getCourse, getAllCourses, addCourse, updateCourse, deleteCourse };
+module.exports = { getSubjects, getCount, getCourse, getAllCourses, addCourse, updateCourse, deleteCourse };

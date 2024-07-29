@@ -1,13 +1,15 @@
 export { };
 var express = require('express');
 const router = express.Router();
-const { getCourse, getAllCourses, addCourse, updateCourse, deleteCourse } = require('../../controller/coursesController.js')
+const { getSubjects, getCount, getCourse, getAllCourses, addCourse, updateCourse, deleteCourse } = require('../../controller/coursesController.js')
 
 router
+    .get('/subjects', getSubjects)
+    .get('/count', getCount)
     .get('/:id', getCourse)
     .get('/', getAllCourses)
     .post('/', addCourse)
     .put('/', updateCourse)
-    .delete('/', deleteCourse)
+    .delete('/:id', deleteCourse)
 
 module.exports = router;

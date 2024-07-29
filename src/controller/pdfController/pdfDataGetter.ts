@@ -45,13 +45,12 @@ const getCoursesPdfSubject = async (subject) => {
 }
 const getCoursesPdfTrainer = async (trainer) => {
     try {
-        const courses = await prisma.courses.findMany({
+        const courses = await prisma.trainers.findUnique({
             where: {
-                trainer: {
-                    id: trainer.id
-                }
-            }
-        })
+                id: trainer.id
+            },
+        }).courses();
+
         return courses
     } catch (error: any) {
         throw new Error(error.message)
@@ -59,19 +58,19 @@ const getCoursesPdfTrainer = async (trainer) => {
 }
 const getCoursesPdfTrainee = async (trainee) => {
     try {
-        const courses = await prisma.courses.findMany({
+        const courses = await prisma.trainees.findUnique({
             where: {
-                trainees:{every:{id:trainee.id}} 
-            }
-            
-        })
+                id: trainee.id
+            },
+        }).courses();
+
         return courses
     } catch (error: any) {
         throw new Error(error.message)
     }
 }
 
-const getCoursesPdfDate = async (startDate: string, finishDate: string) => {
+const getCoursesPdfDateWithoutNames = async (startDate: string, finishDate: string) => {
     try {
         const courses = await prisma.courses.findMany()
         return filterCoursesBasedOnDate(courses, startDate, finishDate)
@@ -79,5 +78,38 @@ const getCoursesPdfDate = async (startDate: string, finishDate: string) => {
         throw new Error(error.message)
     }
 }
+const getCoursesPdfDateWithNames = async (startDate: string, finishDate: string) => {
+    try {
+        const courses = await prisma.courses.findMany({
+            include:{
+                trainees: true,
+                trainers: true
+            }
+        })
+        return filterCoursesBasedOnDate(courses, startDate, finishDate)
+    } catch (error: any) {
+        throw new Error(error.message)
+    }
+}
+const getCourseDataList = async (courseID: string) => {
+    try {
+        const course = await prisma.courses.findUnique({
+            where: {
+                id: parseInt(courseID)
+            },
+            include:{
+                trainees: {
+                    include: {
+                        school: true
+                    }
+                },
+                trainers: true
+            },
+        })
+        return course
+    } catch (error: any) {
+        throw new Error(error.message)
+    }
+}
 
-module.exports = { getCoursesPdfSubject, getCoursesPdfTrainer, getCoursesPdfTrainee, getCoursesPdfDate };
+module.exports = { getCoursesPdfSubject, getCoursesPdfTrainer, getCoursesPdfTrainee, getCoursesPdfDateWithoutNames, getCoursesPdfDateWithNames, getCourseDataList };

@@ -13,20 +13,24 @@ appServer.use(express.text());
 
 
 
-//serve static files
+// Serve static files
 appServer.use('/', express.static(path.join(__dirname, '..', 'views')));
-appServer.use('/', require('./routes/root'));
+appServer.use(/^\/(trainee|course|pdf|school|admin|courseview)$/, require('./routes/root'));
+appServer.use('/login', require('./routes/login'));
 
-// PROTECTED ROUTES
+// Login
+appServer.use('/api/login', require('./routes/api/login'));
+
+// PROTECTED ROUTES (really?)
 appServer.use('/api/trainees', require('./routes/api/trainees'));
 appServer.use('/api/trainers', require('./routes/api/trainers'));
 appServer.use('/api/courses', require('./routes/api/courses'));
 appServer.use('/api/schools', require('./routes/api/schools'));
 appServer.use('/api/adminstrations', require('./routes/api/adminstrations'));
-appServer.use('/api/specialities', require('./routes/api/specialities'));
 appServer.use('/api/pdf', require('./routes/api/pdf'));
+appServer.use('/api/disclaimer', require('./routes/api/disclaimer'));
 
-appServer.listen(PORT, () => console.log(`SERVER Runinng ${PORT}`))
+// appServer.listen(PORT, () => console.log(`SERVER Runinng ${PORT}`))
 
 
 

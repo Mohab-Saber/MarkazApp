@@ -1,9 +1,10 @@
 export { };
 var express = require('express');
 const router = express.Router();
-const {getCount, getTrainer, getAllTrainers,getSomeTrainers, addTrainer, updateTrainer, deleteTrainer } = require('../../controller/trainersController.js')
+const {getSpecialities, getCount, getTrainer, getAllTrainers,getSomeTrainers, addTrainer, updateTrainer, deleteTrainer } = require('../../controller/trainersController.js')
 
 router
+    .get('/specialities', getSpecialities)
     .get('/count', getCount)
     .get('/:id', getTrainer)
     .get('/', (req, res) => {

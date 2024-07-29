@@ -7,35 +7,59 @@ const os = require('os');
 const htmlFilesPath = path.join(os.userInfo().homedir, 'AppData', 'local', 'Markaz', 'htmlFiles');
 const pdfFilesPath = path.join(os.userInfo().homedir, 'AppData', 'local', 'Markaz', 'pdfFiles');
 const outputPath = path.join(pdfFilesPath, '..', 'PDF');
+
 const generateHTML = require('./htmlGenerator');
+const generateHTMLForCourseList = require('./htmlGeneratorForCourseList');
+
 const pdfDBFuncs = require('./pdfDataGetter');
 
-const generateHTMLPages = (data: any = [], templateType) => {
+const generateHTMLPages = (data: any = [], templateType : string) => {
+
+  // Clearing path
   if (fs.existsSync(htmlFilesPath)) { fs.rmdirSync(htmlFilesPath, { recursive: true }) }
   fs.mkdirSync(htmlFilesPath)
-  for (let pageNum = 1; Math.ceil(data.length / 20) >= pageNum; pageNum++) {
-    fs.writeFileSync(path.join(htmlFilesPath, `page${pageNum}.html`),
+
+  if(['subject', 'trainer', 'trainee', 'dateWithNames', 'dateWithoutNames'].includes(templateType)){
+    for (let pageNum = 1; Math.ceil(data.length / 20) >= pageNum; pageNum++) {
+      fs.writeFileSync(path.join(htmlFilesPath, `page${pageNum}.html`),
       generateHTML(data.slice((pageNum - 1) * 20, pageNum * 20), pageNum, templateType, data.length))
+    }
+  }else{
+    for (let pageNum = 1; Math.ceil(data[templateType === 'courseListTrainees' ? 'trainees' : 'trainers'].length / 17) >= pageNum; pageNum++) {
+      fs.writeFileSync(path.join(htmlFilesPath, `page${pageNum}.html`),
+        generateHTMLForCourseList(data[templateType === 'courseListTrainees' ? 'trainees' : 'trainers'].slice((pageNum - 1) * 17, pageNum * 17), pageNum, templateType, data, data.subject))
+    }
   }
 }
-const generatePDFPages = async (data) => {
+const generatePDFPages = async (data, templateType) => {
   if (fs.existsSync(pdfFilesPath)) { fs.rmdirSync(pdfFilesPath, { recursive: true }) }
-  fs.mkdirSync(pdfFilesPath)
+  fs.mkdirSync(pdfFilesPath, {recursive: true})
 
   const browser = await playwright.chromium.launch();
   const context = await browser.newContext();
   const page = await context.newPage();
+
+
+  if(['subject', 'trainer', 'trainee', 'dateWithNames', 'dateWithoutNames'].includes(templateType)){
+      
   for (let pageNum = 1; Math.ceil(data.length / 20) >= pageNum; pageNum++) {
     await page.goto(path.join(htmlFilesPath, `page${pageNum}.html`));
-
     await page.pdf({ path: path.join(pdfFilesPath, `page${pageNum}.pdf`) });
   }
+  }else{
+    for (let pageNum = 1; Math.ceil(data[templateType === 'courseListTrainees' ? 'trainees' : 'trainers'].length / 17) >= pageNum; pageNum++) {
+      await page.goto(path.join(htmlFilesPath, `page${pageNum}.html`));
+      await page.pdf({ path: path.join(pdfFilesPath, `page${pageNum}.pdf`) });
+    }
+  }
+  await context.close();
+  await browser.close();
 }
 
 const combinePDFs = async (pdfPaths) => {
   // Create a new PDF document
   const mergedPdf = await PDFDocument.create();
-
+  const sorted = pdfPaths.sort((a, b) => a.length - b.length);
   // Iterate over each PDF path
   for (const pdfPath of pdfPaths) {
     // Read the PDF file
@@ -53,9 +77,9 @@ const combinePDFs = async (pdfPaths) => {
 
   // Write the merged PDF to a file
   const mergedPdfBytes = await mergedPdf.save();
-  await fsPromises.writeFile(path.join(outputPath, 'combined.pdf'), mergedPdfBytes);
+  await fsPromises.writeFile(path.join(outputPath, 'combined1.pdf'), mergedPdfBytes);
 
-  console.log(`Combined PDFs saved to ${path.join(outputPath, 'combined.pdf')}`);
+  console.log(`Combined PDFs saved to ${path.join(outputPath, 'combined1.pdf')}`);
 }
 
 const makePdf = async (req, res) => {
@@ -71,16 +95,20 @@ const makePdf = async (req, res) => {
       data = await pdfDBFuncs.getCoursesPdfTrainer( pdfRequested.trainer);
 
     } else if (pdfRequested.type === 'dateWithNames') {
-      data = await pdfDBFuncs.getCoursesPdfDate( pdfRequested.startDate, pdfRequested.finishDate);
+      data = await pdfDBFuncs.getCoursesPdfDateWithNames( pdfRequested.startDate, pdfRequested.finishDate);
     } else if (pdfRequested.type === 'dateWithoutNames') {
-      data = await pdfDBFuncs.getCoursesPdfDate( pdfRequested.startDate, pdfRequested.finishDate);
+      data = await pdfDBFuncs.getCoursesPdfDateWithoutNames( pdfRequested.startDate, pdfRequested.finishDate);
+    } else if (pdfRequested.type === 'courseListTrainees') {
+      data = await pdfDBFuncs.getCourseDataList( pdfRequested.courseID);
+    } else if (pdfRequested.type === 'courseListTrainers') {
+      data = await pdfDBFuncs.getCourseDataList( pdfRequested.courseID);
 
     } else {
       throw new Error('Bad Type');
     }
 
     generateHTMLPages(data, pdfRequested.type);
-    await generatePDFPages(data);
+    await generatePDFPages(data, pdfRequested.type);
 
     let pdfsPaths: any = [];
     const pdfFiles = fs.readdirSync(pdfFilesPath);

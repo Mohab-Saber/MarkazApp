@@ -1,6 +1,24 @@
+export{}
 const markazLogo = require(`./markazLogo`);
 
-const generateTraineeTable = (data20rows: any, templateType) => {
+const beforeTableHeader = (data20rows: any, templateType) => {
+  let title = '';
+  if (templateType === 'subject') {
+    title = `${data20rows[0].subject}`
+  } else if (templateType === 'trainer') {
+    title = `اسم المدرب: &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp`
+  } else if (templateType === 'trainee') {
+    title = `اسم المتدرب: &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp`
+  }
+  return `
+        <div class="">
+          <h3 style="text-align:center;direction: rtl; ">
+            ${title}
+           </h3>
+        </div>
+      `
+}
+const generateTraineeTable = (data20rows: any, templateType, pageNum) => {
   const tableRows = data20rows.map((course, index) => {
     if (templateType === 'subject') {
       return `
@@ -20,17 +38,20 @@ const generateTraineeTable = (data20rows: any, templateType) => {
             <td>${course.attendanceNumber || ''}</td>
         </tr>`
     } else if (templateType === 'dateWithNames') {
-      return `
+    return `
       <tr>
+        <td>${course.subject || ''}</td>
         <td>${course.startDate || ''}</td>
         <td>${course.finishDate || ''}</td>
         <td>${course.attendanceDays || ''}</td>
         <td>${course.attendanceNumber || ''}</td>
+        <td>${course.trainers.map((e) => (e.fullName)).join('<br>')}</td>
+        <td>${course.trainees.map((e) => (e.fullName)).join('<br>')}</td>
       </tr>`
     } else if (templateType === 'dateWithoutNames') {
       return `
       <tr>
-        <td>${index+1 || ''}</td>
+        <td>${(index + 1) + (pageNum-1)*20 || ''}</td>
         <td>${course.subject || ''}</td>
         <td>${course.startDate || ''}</td>
         <td>${course.finishDate || ''}</td>
@@ -47,12 +68,13 @@ const generateTraineeTable = (data20rows: any, templateType) => {
         <table>
             <thead>
                 <tr>
-                    ${['dateWithoutNames'].includes(templateType) ? `<th>م</th>`: ``}
-                    ${['trainee', 'trainer', 'dateWithoutNames'].includes(templateType) ? `<th>الموضوع</th>`: ``}
+                    ${['dateWithoutNames'].includes(templateType) ? `<th>م</th>` : ``}
+                    ${['trainee', 'trainer', 'dateWithoutNames', 'dateWithNames'].includes(templateType) ? `<th>الموضوع</th>` : ``}
                     <th>تاريخ البداية</th>
                     <th>تاريخ النهاية</th>
                     <th>عدد الأيام</th>
                     <th>عدد الحضور</th>
+                    ${['dateWithNames'].includes(templateType) ? `<th>المدربين</th> <th>المتدربين</th>` : ``}
                 </tr>
             </thead>
             <tbody>
@@ -68,14 +90,20 @@ const generateHTML = (data20rows: String[], pageNum: Number, templateType, cours
   <head>
     <title>Trainees List</title>
     <style>
-            body {
+    body {
       direction: rtl;
     }
-  
+    .content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
     table {
       ${pageNum === 1 ? `margin-top: 10px;` : `margin-top: 60px;`}
       border-collapse: collapse;
       width: 100%;
+      margin-bottom: 100px;
     }
   
     th,
@@ -121,10 +149,14 @@ const generateHTML = (data20rows: String[], pageNum: Number, templateType, cours
     }
   
     .footer {
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+    }
+    .footer-sign{
       display: flex;
       justify-content: space-around;
       text-align: center;
-  
     }
   
     .footer p {
@@ -137,16 +169,17 @@ const generateHTML = (data20rows: String[], pageNum: Number, templateType, cours
     </style>
   </head>
   <body>
+  <div class="content">
   ${pageNum === 1 ? `<div class="header">
     ${markazLogo}
     <div class="course-title">
       <p>
         ${templateType === 'subject' ? `تقرير موضوعي بدورات المركز` :
-         templateType === 'trainer' ? `تقرير مدرب بدورات المركز` :
-         templateType === 'trainee' ? `تقرير متدرب بدورات المركز` :
-         templateType === 'dateWithNames' ? `تقرير فتري بدورات المركز` :
-          `تقرير فتري بدورات المركز` 
-        }</p>
+        templateType === 'trainer' ? `تقرير مدرب بدورات المركز` :
+          templateType === 'trainee' ? `تقرير متدرب بدورات المركز` :
+            templateType === 'dateWithNames' ? `تقرير فتري بدورات المركز` :
+              `تقرير فتري بدورات المركز`
+      }</p>
   
     </div>
     <div class="course-num">
@@ -154,12 +187,10 @@ const generateHTML = (data20rows: String[], pageNum: Number, templateType, cours
         <span>${courseCount}</span>
     </div>
     </div>` : ''}
-    <div class="">
-      <h3 style="text-align:center;">
-       </h3>
-    </div>
-    ${generateTraineeTable(data20rows, templateType)}
+    ${beforeTableHeader(data20rows, templateType)}
+    ${generateTraineeTable(data20rows, templateType, pageNum)}
     <div class="footer">
+    <div class="footer-sign">
       <div class="course-admin">
         <p>مسئول التدريب</p>
         <span> (.......................................)</span>
@@ -170,6 +201,8 @@ const generateHTML = (data20rows: String[], pageNum: Number, templateType, cours
       </div>
       </div>
       <div class="pageNumber"><p>صفحة ${pageNum}</p></div>
+      </div>
+      </div>
   </body>
   </html>
   `;

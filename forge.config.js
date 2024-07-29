@@ -4,26 +4,24 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    icon: './markazIcon' // no file extension required
   },
   rebuildConfig: {},
-  makers: [
-    {
-      name: '@electron-forge/maker-squirrel',
-      config: {},
+  makers: {
+    name: "@electron-forge/maker-zip",
+    platforms: [
+            "win32"
+          ],
+    config: {
+      name: 'your_app_name',
+      authors: 'Your Name',
+      description: 'Your App Description',
+      version: '1.0.0',
+      iconUrl: 'http://url-to-your-icon.ico',
+      setupIcon: 'path/to/your/icon.ico',
+      loadingGif: 'path/to/loading.gif',
     },
-    {
-      name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
-    },
-    {
-      name: '@electron-forge/maker-deb',
-      config: {},
-    },
-    {
-      name: '@electron-forge/maker-rpm',
-      config: {},
-    },
-  ],
+  },
   plugins: [
     {
       name: '@electron-forge/plugin-auto-unpack-natives',

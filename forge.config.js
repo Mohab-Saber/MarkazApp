@@ -4,7 +4,7 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
-    icon: './markazIcon' // no file extension required
+    icon: './assets/markazIcon' // no file extension required
   },
   rebuildConfig: {},
   makers: {
@@ -13,13 +13,13 @@ module.exports = {
             "win32"
           ],
     config: {
-      name: 'your_app_name',
-      authors: 'Your Name',
-      description: 'Your App Description',
+      name: 'MarkazApp',
+      authors: 'Mohab Saber',
+      description: 'MarkazApp to manage Database of Markaz',
       version: '1.0.0',
-      iconUrl: 'http://url-to-your-icon.ico',
-      setupIcon: 'path/to/your/icon.ico',
-      loadingGif: 'path/to/loading.gif',
+      iconUrl: './assets/markazIcon',
+      setupIcon: './assets/markazIcon',
+      loadingGif: './assets/markazIcon',
     },
   },
   plugins: [

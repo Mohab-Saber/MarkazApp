@@ -13,9 +13,16 @@ const getCourse = async (courseID) => {
                 trainees: {
                     include: {
                         school: true
+                    },
+                    orderBy: {
+                        fullName: "asc"
                     }
                 },
-                trainers: true
+                trainers: {
+                    orderBy: {
+                        fullName: "asc"
+                    }
+                }
             }
         })
         return course

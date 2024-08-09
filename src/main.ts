@@ -31,15 +31,15 @@ if (!gotTheLock) {
   app.quit();
 } else {
   const { appServer: appserver } = require('./server');
-  appserver.listen(3060, () => {
-    console.log('Server running on 3060');
-  });
+  // appserver.listen(3060, () => {
+  //   console.log('Server running on 3060');
+  // });
   const createWindow = () => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
       width: 1200,
+      roundedCorners: true,
       height: 700,
-      icon: './markazIcon.ico',
       darkTheme: true,
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
@@ -101,4 +101,11 @@ if (!gotTheLock) {
   ipcMain.on('pdf', (event, args) => {
     require('child_process').exec(`explorer.exe "${path.join(os.userInfo().homedir, 'AppData', 'local', 'Markaz', 'PDF')}"`);
   });
+  
+  ipcMain.on('dataDBFolder', (event, args) => {
+    require('child_process').exec(`explorer.exe "${path.join(os.userInfo().homedir, 'AppData', 'local', 'Markaz')}"`);
+  });
+
+  ipcMain.on('checkDataDBFile', (event, args) => (
+    !fs.existsSync(pathToDataDBFolder)));
 }

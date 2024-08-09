@@ -1,11 +1,16 @@
 {
   "name": "markazapp",
   "productName": "MarkazApp",
+  "icon": "./assets/markazIcon.ico",
   "version": "1.0.0",
   "description": "MarkazApp to manage Database",
   "main": "./app/main.js",
   "config": {
     "forge": {
+      "packagerConfig": {
+        "asar": true,
+        "icon": "./assets/markazIcon"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-zip",

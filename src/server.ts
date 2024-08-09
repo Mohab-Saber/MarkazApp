@@ -12,10 +12,11 @@ appServer.use(express.json({limit: '500mb'}));
 appServer.use(express.text());
 
 
+appServer.use('/check', (req, res) => (res.sendStatus(200)));
 
 // Serve static files
 appServer.use('/', express.static(path.join(__dirname, '..', 'views')));
-appServer.use(/^\/(trainee|course|pdf|school|admin|courseview)$/, require('./routes/root'));
+appServer.use(/^\/(trainee|trainer|course|courseform|pdf|school|admin|courseview)$/, require('./routes/root'));
 appServer.use('/login', require('./routes/login'));
 
 // Login
@@ -30,7 +31,7 @@ appServer.use('/api/adminstrations', require('./routes/api/adminstrations'));
 appServer.use('/api/pdf', require('./routes/api/pdf'));
 appServer.use('/api/disclaimer', require('./routes/api/disclaimer'));
 
-// appServer.listen(PORT, () => console.log(`SERVER Runinng ${PORT}`))
+appServer.listen(PORT, () => console.log(`SERVER Runinng ${PORT}`))
 
 
 

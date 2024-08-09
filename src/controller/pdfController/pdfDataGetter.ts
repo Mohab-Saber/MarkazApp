@@ -49,6 +49,7 @@ const getCoursesPdfTrainer = async (trainer) => {
             where: {
                 id: trainer.id
             },
+             
         }).courses();
 
         return courses
@@ -82,8 +83,16 @@ const getCoursesPdfDateWithNames = async (startDate: string, finishDate: string)
     try {
         const courses = await prisma.courses.findMany({
             include:{
-                trainees: true,
-                trainers: true
+                trainees: {
+                    orderBy: {
+                        fullName: "asc"
+                    }
+                },
+                trainers: {
+                    orderBy: {
+                        fullName: "asc"
+                    }
+                }
             }
         })
         return filterCoursesBasedOnDate(courses, startDate, finishDate)
@@ -101,9 +110,16 @@ const getCourseDataList = async (courseID: string) => {
                 trainees: {
                     include: {
                         school: true
+                    },
+                    orderBy: {
+                        fullName: "asc"
                     }
                 },
-                trainers: true
+                trainers: {
+                    orderBy: {
+                        fullName: "asc"
+                    }
+                }
             },
         })
         return course

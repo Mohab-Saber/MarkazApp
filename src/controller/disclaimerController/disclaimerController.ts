@@ -49,9 +49,10 @@ const generatePDFPages = async (data, templateType) => {
 const combinePDFs = async (pdfPaths) => {
   // Create a new PDF document
   const mergedPdf = await PDFDocument.create();
+  const sortedPaths = pdfPaths.sort((a, b) => a.length - b.length);
 
   // Iterate over each PDF path
-  for (const pdfPath of pdfPaths) {
+  for (const pdfPath of sortedPaths) {
     // Read the PDF file
     const pdfBytes = await fsPromises.readFile(pdfPath);
 
@@ -79,6 +80,7 @@ const makePdf = async (req, res) => {
 
 
     let data: any = pdfRequested.dataSelection || await pdfDBFuncs.getCourse(pdfRequested.courseID);
+    console.log(pdfRequested)
     
 
     generateHTMLPages(data, pdfRequested.type);

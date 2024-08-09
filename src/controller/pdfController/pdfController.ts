@@ -59,9 +59,9 @@ const generatePDFPages = async (data, templateType) => {
 const combinePDFs = async (pdfPaths) => {
   // Create a new PDF document
   const mergedPdf = await PDFDocument.create();
-  const sorted = pdfPaths.sort((a, b) => a.length - b.length);
+  const sortedPaths = pdfPaths.sort((a, b) => a.length - b.length);
   // Iterate over each PDF path
-  for (const pdfPath of pdfPaths) {
+  for (const pdfPath of sortedPaths) {
     // Read the PDF file
     const pdfBytes = await fsPromises.readFile(pdfPath);
 

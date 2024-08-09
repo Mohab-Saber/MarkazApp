@@ -44,9 +44,9 @@ model Courses {
   subject          String
   startDate        String?
   finishDate       String?
-  attendanceDays   Int?
-  attendanceNumber Int?
-  courseCode       Int?            @unique
+  attendanceDays   String?
+  attendanceNumber String?
+  courseCode       String?         @unique
   courseLevel      String?
   school_id        Int?
   adminstrationId  Int?

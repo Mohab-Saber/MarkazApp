@@ -8,8 +8,8 @@ const markazLogo = require(`./markazLogo`);
 // 3- trainee (done)
 // 4- dateWithoutNames (done)
 // 5- dateWithNames (undone)
-// 6- courseListTrainees (undone)
-// 7- courseListTrainers (undone)
+// 6- courseListTrainees (done)
+// 7- courseListTrainers (done)
 
 
 const beforeTableHeader = (course) => {
@@ -187,9 +187,8 @@ const generateHTMLForCourseList = (data20rows: any[], pageNum: Number, templateT
     </div>
 
     <div class="course-num">
-      <p>عدد ${templateType === 'courseListTrainees' ? `المدربين` :
-              `المتدربين`}</p>
-        <span>${templateType === 'courseListTrainees' ? course.trainees?.length :  course.trainers?.length}</span>
+      <p>عدد ${templateType === 'courseListTrainees' ? `المتدربين` : `المدربين`}</p>
+      <span>${templateType === 'courseListTrainees' ? course.trainees?.length :  course.trainers?.length}</span>
     </div>
     </div>` : ''}
     ${beforeTableHeader(course)}

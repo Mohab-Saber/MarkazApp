@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 const getCount = async (req, res) => {
 
     try {
-        const count = await prisma.adminstrations.count()
+        const count = await prisma.courses.count()
         res.status(200).send({ count })
     } catch (error: any) {
         console.log(error)
@@ -28,6 +28,22 @@ const getSubjects = async (req, res) => {
         res.status(400).send(error.message)
     }
 }
+const getCourseLevels = async (req, res) => {
+
+    try {
+        const courseLevels = await prisma.courses.findMany({
+            distinct: "courseLevel",
+            select: {
+                id: true,
+                courseLevel: true
+            }
+        })
+        res.status(200).send(courseLevels)
+    } catch (error: any) {
+        console.log(error)
+        res.status(400).send(error.message)
+    }
+}
 
 const getCourse = async (req, res) => {
 
@@ -38,11 +54,31 @@ const getCourse = async (req, res) => {
             },
             include: {
                 trainers: true,
-                trainees: true
+                trainees: {
+                    orderBy: {
+                        fullName: "asc"
+                    }
+                }
             }
         })
         res.status(200).send(courses)
     } catch (error: any) {
+        res.status(400).send(error.message)
+    }
+}
+const getSomeCourses = async (req, res) => {
+    try {
+        const courses = await prisma.courses.findMany({
+            include: {
+                trainees: true,
+                trainers: true,
+            },
+            take: parseInt(req.query._limit) || 5,
+            skip: (parseInt(req.query._page) - 1) * parseInt(req.query._limit)
+        })
+        res.status(200).send(courses)
+    } catch (error: any) {
+        console.log(error)
         res.status(400).send(error.message)
     }
 }
@@ -63,6 +99,9 @@ const getAllCourses = async (req, res) => {
                         id: true,
                         fullName: true,
                         nationalID: true
+                    },
+                    orderBy:{
+                        fullName: "asc",
                     }
                 }
             }
@@ -84,12 +123,7 @@ const addCourse = async (req, res) => {
         }
         const opCode = await prisma.courses.create({
             data: {
-                subject: course.subject,
-                startDate: course.startDate,
-                finishDate: course.finishDate,
-                attendanceDays: parseInt(course.attendanceDays),
-                courseCode: parseInt(course.courseCode),
-                courseLevel: course.courseLevel,
+                ...course,
                 trainers: { connect: course.trainers },
                 trainees: { connect: course.trainees }
             }
@@ -113,8 +147,8 @@ const updateCourse = async (req, res) => {
         const courseID = course.id;
         const trainees = course.selectedTrainees;
         const trainers = course.selectedTrainers;
-        course.courseCode = parseInt(course.courseCode) || null
-        course.attendanceDays = parseInt(course.attendanceDays) || null
+        course.courseCode = course.courseCode || null
+        course.attendanceDays = course.attendanceDays || null
 
         delete course.id; delete course.selectedTrainers; delete course.selectedTrainees;
 
@@ -185,4 +219,4 @@ const deleteCourse = async (req, res) => {
     }
 }
 
-module.exports = { getSubjects, getCount, getCourse, getAllCourses, addCourse, updateCourse, deleteCourse };
+module.exports = { getSubjects, getCourseLevels, getCount, getCourse, getSomeCourses, getAllCourses, addCourse, updateCourse, deleteCourse };

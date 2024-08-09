@@ -27,11 +27,14 @@ const generateDisclaimerContent = (data2rows: any, pageNum, templateType, course
                 <br>
                 <span>بركة السبع</span>
               </div>
+              ${element.school?.name ? `
               <div class="person-content">
                 <span>${element.school?.name ? 'مدرسة' : ' '}</span>
                 <br>
                 <span>${element.school?.name || ' '}</span>
                 </div>
+                ` : ' '}
+              
                 ` :
                 ``}
             </div>

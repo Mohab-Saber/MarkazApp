@@ -1,6 +1,7 @@
 views/PDF
 views/toPDF
 pdf
+app
 # Logs
 logs
 *.log
